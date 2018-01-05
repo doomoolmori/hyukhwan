@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<script>
+
+const users = {
+  '1': {
+    name: 'alvin',
+    subscribedPortfolioId: '2'
+  },
+  '2': {
+    name: 'jisoo',
+    subscribedPortfolioId: '1'
+  }
+}
+
+const ps = {
+  '1': 'soonhanmat',
+  '2': 'yakganmaeunmat',
+  '3': 'maeunmat'
+}
+
+// 프러미스
+const PromiseDatabase = {
+  findUserById: (id) => {
+
+    let promise2Deferred = new Promise((resolve, reject) => { //프러미스 객채 생성
+      console.log("[ENTER] promise2Deferred")
+      setTimeout( function promise2DeferredInner () {
+        const user = users[id];
+        console.log("[ENTER] a: promise2DeferredInner")
+        if ( ! user) {
+          reject(new Error("No user found")) // 프러미스 상태 변환
+          console.log("[REJECT] promise2Deferred")
+        } else {
+          resolve(user);  // 프러미스 상태 변환
+          console.log("[RESOLVE] promise2Deferred")
+        }
+        console.log("[EXIT] a: promise2DeferredInner")
+      }, 100);
+      console.log("[EXIT] promise2Deferred")
+    });
+    return promise2Deferred;
+  },
+
+  findPortfolioById: (id) => {
+    return new Promise((resolve, reject) => {
+      const p = ps[id];
+      if ( ! p) reject(new Error("No portfolio found"))
+      else resolve(p);  
+    })
+  }
+}
+
+
+window.E = {
+  expressExamplePromise: (userId) => {
+    console.log("[ENTER] expressExamplePromise")
+    let promise1 = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+      console.log("[ENTER] promise1")
+      let p1 = PromiseDatabase.findUserById(userId)
+      console.log("  promise1 -> p1")   
+      let p2 = p1.then(user => PromiseDatabase.findPortfolioById(user.subscribedPortfolioId))
+      console.log("  promise1 -> p2")   
+      let p3 = p2.then(portfolio => {
+        let result = {portfolio}
+        resolve(result)
+        console.log('[RESOLVED] Promise1 Resolved!')
+      })
+      console.log("  promise1 -> p3")   
+      /* let p4 = */ p3.catch(reject)
+      console.log("  promise1 -> p4")   
+      console.log("[EXIT] promise1")
+    })
+
+    let promise2 = promise1.then(result => console.log("res.render('someView', ?)", result))
+    console.log("  promise2")   
+    /* let promise3 = */promise2.catch(err => console.log('next(?)', err))
+    console.log("  promise3")   
+
+    console.log("[EXIT] expressExamplePromise")
+  },
+
+}
+</script>
+<body>
+Let's play the promise
+</body>

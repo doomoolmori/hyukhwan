@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<script>
+
+const users = {
+  '1': {
+    name: 'alvin',
+    subscribedPortfolioId: '2'
+  },
+  '2': {
+    name: 'jisoo',
+    subscribedPortfolioId: '1'
+  }
+}
+
+const ps = {
+  '1': 'soonhanmat',
+  '2': 'yakganmaeunmat',
+  '3': 'maeunmat'
+}
+// 단순 콜백
+const OldDatabase = {
+  findUserById: function (id, cb) { // id를 파라미터로, cb라는 콜백함수도 파라미터로
+    console.log("[ENTER] findUserById")
+    const user = users[id]; // users에 파라미터 id로 해당 value를 얻은 다음 user에 담그기
+    if ( ! user) cb(new Error("No user found")) // cb에 err 타입을 담음 
+    else cb(null, user); //cb에 파라미터 2개를 넣음, 앞에는 null, 뒤에는 user
+    console.log("[EXIT] findUserById")
+  },
+
+  findPortfolioById: function(id, cb) {
+    console.log("[ENTER] findPortfolioById")
+    const p = ps[id];
+    if ( ! p) cb(new Error("No portfolio found"))
+    else cb(null, p);
+    console.log("[EXIT] findPortfolioById")
+  }
+}
+window.E = {
+  expressExampleOld: (userId) => {
+    console.log("[ENTER] expressExampleOld")
+    let cb2 = function (err, user) { // 앞에는 id, 뒤에는 cb에 넘겨줄 2개 파라미터
+      if (err) console.log('next(?)', err) // 위에 cb에서 err를 리턴하면 
+      else { 
+        OldDatabase.findPortfolioById(user.subscribedPortfolioId, (err, portfolio) => {
+          if (err) console.log('next(?)', err)
+          else console.log("res.render('someView', ?)", {portfolio})
+        })
+      }
+    }
+    
+    OldDatabase.findUserById(userId, cb2)
+    console.log("[EXIT] expressExampleOld")
+    return 'SAMPLE';
+  }
+}
+</script>
+<body>
+Let's play the promise
+</body>

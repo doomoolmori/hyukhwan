@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<script>
+
+const users = {
+  '1': {
+    name: 'alvin',
+    subscribedPortfolioId: '2'
+  },
+  '2': {
+    name: 'jisoo',
+    subscribedPortfolioId: '1'
+  }
+}
+
+const ps = {
+  '1': 'soonhanmat',
+  '2': 'yakganmaeunmat',
+  '3': 'maeunmat'
+}
+// 단순 콜백
+const OldDatabase = {
+  findUserById: function (id, cb) { // id를 파라미터로, cb라는 콜백함수도 파라미터로
+    console.log("[ENTER] findUserById")
+    const user = users[id]; // users에 파라미터 id로 해당 value를 얻은 다음 user에 담그기
+    if ( ! user) cb(new Error("No user found")) // cb에 err 타입을 담음 
+    else cb(null, user); //cb에 파라미터 2개를 넣음, 앞에는 null, 뒤에는 user
+    console.log("[EXIT] findUserById")
+  },
+
+  findPortfolioById: function(id, cb) {
+    console.log("[ENTER] findPortfolioById")
+    const p = ps[id];
+    if ( ! p) cb(new Error("No portfolio found"))
+    else cb(null, p);
+    console.log("[EXIT] findPortfolioById")
+  }
+}
+//window.req = {
+//  query: {
+//    userId: '1',
+//    portfolioId: '3'
+//  }
+//}
+
+
+// 프러미스
+const PromiseDatabase = {
+  findUserById: (id) => {
+
+    let promise2Deferred = new Promise((resolve, reject) => { //프러미스 객채 생성
+      console.log("[ENTER] promise2Deferred")
+      let a = function promise2DeferredInner () {
+        const user = users[id];
+        console.log("[ENTER] a: promise2DeferredInner")
+        if ( ! user) {
+          reject(new Error("No user found")) // 프러미스 상태 변환
+          console.log("[REJECT] promise2Deferred")
+        } else {
+          resolve(user);  // 프러미스 상태 변환
+          console.log("[RESOLVE] promise2Deferred")
+        }
+        console.log("[EXIT] a: promise2DeferredInner")
+      }
+      a();
+      console.log("[EXIT] promise2Deferred")
+    });
+    return promise2Deferred;
+  },
+
+  findPortfolioById: (id) => {
+    return new Promise((resolve, reject) => {
+      const p = ps[id];
+      if ( ! p) reject(new Error("No portfolio found"))
+      else resolve(p);  
+    })
+  }
+}
+
+
+
+const AsyncDatabase = {
+
+  findUserById: async (id) => {
+    const user = users[id];
+    if ( ! user) throw new Error("No user found")
+    else return user
+  },
+
+  findPortfolioById: async (id) => {
+    const p = ps[id];
+    if ( ! p) throw new Error("No portfolio found")
+    else return p
+  }
+}
+
+window.E = {
+  expressExampleOld: (userId) => {
+    console.log("[ENTER] expressExampleOld")
+    let cb2 = function (err, user) { // 앞에는 id, 뒤에는 cb에 넘겨줄 2개 파라미터
+      if (err) console.log('next(?)', err) // 위에 cb에서 err를 리턴하면 
+      else { 
+        OldDatabase.findPortfolioById(user.subscribedPortfolioId, (err, portfolio) => {
+          if (err) console.log('next(?)', err)
+          else console.log("res.render('someView', ?)", {portfolio})
+        })
+      }
+    }
+    
+    OldDatabase.findUserById(userId, cb2)
+    console.log("[EXIT] expressExampleOld")
+    return 'SAMPLE';
+  },
+
+  expressExamplePromise: (userId) => {
+    console.log("[ENTER] expressExamplePromise")
+    let promise1 = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+      console.log("[ENTER] promise1")
+      let p1 = PromiseDatabase.findUserById(userId)
+      console.log("  promise1 -> p1")   
+      let p2 = p1.then(user => PromiseDatabase.findPortfolioById(user.subscribedPortfolioId))
+      console.log("  promise1 -> p2")   
+      let p3 = p2.then(portfolio => {
+        let result = {portfolio}
+        resolve(result)
+        console.log('[RESOLVED] Promise1 Resolved!')
+      })
+      console.log("  promise1 -> p3")   
+      /* let p4 = */ p3.catch(reject)
+      console.log("  promise1 -> p4")   
+      console.log("[EXIT] promise1")
+    })
+
+    let promise2 = promise1.then(result => console.log("res.render('someView', ?)", result))
+    console.log("  promise2")   
+    /* let promise3 = */promise2.catch(err => console.log('next(?)', err))
+    console.log("  promise3")   
+
+    console.log("[EXIT] expressExamplePromise")
+  },
+
+  koaExample: async (userId, portfolioId) => {
+      let user = await AsyncDatabase.findUserById(userId)
+      let portfolio = await AsyncDatabase.findPortfolioById(user.subscribedPortfolioId)
+      console.log("ctx.render('someView', ?)", {portfolio})
+  }
+}
+</script>
+<body>
+Let's play the promise
+</body>

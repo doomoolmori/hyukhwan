@@ -34,17 +34,6 @@ expressExampleOld: (req, res, next) => {
   }
   OldDatabase.findUserById(req.query.userId, cb2)
 },
-expressExampleOld: (req, res, next) => {
-  OldDatabase.findUserById(req.query.userId, (err, user) => { // 앞에는 id, 뒤에는 cb에 넘겨줄 2개 파라미터
-    if (err) next(err) // 위에 cb에서 err를 리턴하면 
-    else { 
-      OldDatabase.findPortfolioById(req.query.portfolioId, (err, portfolio) => {
-        if (err) next (err)
-        else res.render('someView', {user, portfolio})
-      })
-    }
-  })
-},
 
 // 프러미스
 const PromiseDatabase = {
@@ -66,6 +55,7 @@ const PromiseDatabase = {
   }
 }
 expressExamplePromise: (req, res, next) => {
+  console.log('ho');
   let promise = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
     PromiseDatabase.findUserById(req.query.userId)
       .then(user => {
