@@ -1,0 +1,40 @@
+{
+  "name": "2018-o-1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/hyukhwankwon/2018-o-1.git",
+  "author": "Alvin Kwon <khh2302@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "docker-compose up -d; nodemon -e njk,ts,tsx --exec 'ts-node' ./index.ts"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "inuitcss": "^6.0.0-beta.5",
+    "koa": "^2.4.1",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.1.0",
+    "koa-nunjucks-2": "^3.0.2",
+    "koa-redis": "^3.1.1",
+    "koa-router": "^7.3.0",
+    "koa-session": "^5.5.1",
+    "koa-static": "^4.0.2"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.43",
+    "@types/koa-bodyparser": "^3.0.26",
+    "@types/koa-logger": "^3.1.0",
+    "@types/koa-redis": "^3.0.2",
+    "@types/koa-router": "^7.0.27",
+    "@types/koa-session": "^3.0.6",
+    "@types/koa-static": "^4.0.0",
+    "@types/node": "^8.5.2",
+    "@types/promise": "^7.1.30",
+    "nodemon": "^1.14.3",
+    "stylelint": "^8.4.0",
+    "ts-node": "^4.1.0",
+    "tsconfig-paths": "^2.6.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  }
+}

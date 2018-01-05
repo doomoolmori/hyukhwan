@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<script>
+
+const users = {
+  '1': 'alvin',
+  '2': 'jisoo'
+}
+
+const ps = {
+  '1': 'soonhanmat',
+  '2': 'yakganmaeunmat',
+  '3': 'maeunmat'
+}
+// 단순 콜백
+const OldDatabase = {
+  findUserById: function (id, cb) { // id를 파라미터로, cb라는 콜백함수도 파라미터로
+    console.log("[ENTER] findUserById")
+    const user = users[id]; // users에 파라미터 id로 해당 value를 얻은 다음 user에 담그기
+    if ( ! user) cb(new Error("No user found")) // cb에 err 타입을 담음 
+    else cb(null, user); //cb에 파라미터 2개를 넣음, 앞에는 null, 뒤에는 user
+    console.log("[EXIT] findUserById")
+  },
+
+  findPortfolioById: function(id, cb) {
+    console.log("[ENTER] findPortfolioById")
+    const p = ps[id];
+    if ( ! p) cb(new Error("No portfolio found"))
+    else cb(null, p);
+    console.log("[EXIT] findPortfolioById")
+  }
+}
+
+
+//window.req = {
+//  query: {
+//    userId: '1',
+//    portfolioId: '3'
+//  }
+//}
+
+
+// 프러미스
+const PromiseDatabase = {
+  findUserById: (id) => {
+    let p = new Promise((resolve, reject) => { //프러미스 객채 생성
+      const user = users[id];
+      if ( ! user) reject(new Error("No user found")) // 프러미스 상태 변환
+      else resolve(user);  // 프러미스 상태 변환
+    });
+    return p;
+  },
+
+  findPortfolioById: (id) => {
+    return new Promise((resolve, reject) => {
+      const p = ps[id];
+      if ( ! p) reject(new Error("No portfolio found"))
+      else resolve(p);  
+    })
+  }
+}
+
+
+
+const AsyncDatabase = {
+
+  findUserById: async (id) => {
+    const user = users[id];
+    if ( ! user) throw new Error("No user found")
+    else return user
+  },
+
+  findPortfolioById: async (id) => {
+    const p = ps[id];
+    if ( ! p) throw new Error("No portfolio found")
+    else return p
+  }
+}
+
+window.E = {
+  expressExampleOld: (userId, portfolioId) => {
+    console.log("[ENTER] expressExampleOld")
+    let cb2 = function (err, user) { // 앞에는 id, 뒤에는 cb에 넘겨줄 2개 파라미터
+      if (err) console.log('next(?)', err) // 위에 cb에서 err를 리턴하면 
+      else { 
+        OldDatabase.findPortfolioById(portfolioId, (err, portfolio) => {
+          if (err) console.log('next(?)', err)
+          else console.log("res.render('someView', ?)", {user, portfolio})
+        })
+      }
+    }
+    
+    OldDatabase.findUserById(userId, cb2)
+    console.log("[EXIT] expressExampleOld")
+    return 'SAMPLE';
+  },
+
+  expressExamplePromise: (userId, portfolioId) => {
+    let promise = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+      PromiseDatabase.findUserById(userId)
+        .then(user => {
+          let p1 = PromiseDatabase.findPortfolioById(portfolioId)
+          let p2 = p1.then(portfolio => {
+            let result = {user, portfolio}
+            resolve(result)
+          })
+          return p2
+        })
+        .catch(reject)
+    })
+    promise //새로운 프러미스 인스턴스의 
+      .then(result => console.log("res.render('someView', ?)", result))
+      .catch(err => console.log('next(?)', err))
+  },
+
+  koaExample: async (userId, portfolioId) => {
+      let user = await AsyncDatabase.findUserById(userId)
+      let portfolio = await AsyncDatabase.findPortfolioById(portfolioId)
+      console.log("ctx.render('someView', ?)", {user, portfolio})
+  }
+}
+</script>
