@@ -38,12 +38,12 @@ export default {
     const url = 'https://api.boolio.co.kr/v1/portfolios'
     const get1 = axios.get(url)
     axios.get(url)
-    .then(function (response){
+    .then(response => {
       ctx.body = response.data
       resolve()
-    }
-    .catch(function (error) {
+    })
+    .catch(error => {
       reject(error)
-    });
+    })
   } 
 }
