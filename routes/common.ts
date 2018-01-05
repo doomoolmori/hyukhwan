@@ -18,6 +18,9 @@ router.get('/p-s', async (ctx, next) => {
 router.get('/all', async (ctx, next) => {
   await ctx.render('promise/all')
 })
+router.get('/', async (ctx, next) => {
+  await ctx.render('promise/example')
+})
 router.get('/counter', mainControllers.counter)
 router.get('/axios', mainControllers.axios)
 router.get('/axios2', mainControllers.axios2)

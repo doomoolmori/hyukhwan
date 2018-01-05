@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <script>
 
 const users = {
@@ -39,26 +40,61 @@ const OldDatabase = {
 //}
 
 
-// 프러미스
-const PromiseDatabase = {
+// 프러미스 SetTimeOut
+{# const PromiseDatabase = {
   findUserById: (id) => {
     let p = new Promise((resolve, reject) => { //프러미스 객채 생성
-      const user = users[id];
-      if ( ! user) reject(new Error("No user found")) // 프러미스 상태 변환
-      else resolve(user);  // 프러미스 상태 변환
+      console.log("[ENTER] findUserById")
+      setTimeout(() => {
+        console.log("  [ENTER] findUserById:inner")
+        const user = users[id];
+        if ( ! user) reject(new Error("No user found")) // 프러미스 상태 변환
+        else resolve(user);  // 프러미스 상태 변환
+        console.log("  [EXIT] findUserById:inner")
+      }, 3000)
+      console.log("[EXIT] findUserById")
     });
     return p;
   },
 
   findPortfolioById: (id) => {
     return new Promise((resolve, reject) => {
-      const p = ps[id];
-      if ( ! p) reject(new Error("No portfolio found"))
-      else resolve(p);  
+      console.log("[ENTER] findPortfolioById")
+      setTimeout(() => {
+        console.log("  [ENTER] findPortfolioById:inner")
+        const p = ps[id];
+        if ( ! p) reject(new Error("No portfolio found"))
+        else resolve(p);  
+        console.log("  [EXIT] findPortfolioById:inner")
+      }, 3000)
+      console.log("[EXIT] findPortfolioById")
+    })
+  }
+} #}
+
+// 프러미스 일반 함수
+const PromiseDatabase = {
+  findUserById: (id) => {
+    let p = new Promise((resolve, reject) => { //프러미스 객채 생성
+      console.log("[ENTER] findUserById")
+        const user = users[id];
+        if ( ! user) reject(new Error("No user found")) // 프러미스 상태 변환
+        else resolve(user);  // 프러미스 상태 변환
+      console.log("[EXIT] findUserById")
+    });
+    return p;
+  },
+
+  findPortfolioById: (id) => {
+    return new Promise((resolve, reject) => {
+      console.log("[ENTER] findPortfolioById")
+        const p = ps[id];
+        if ( ! p) reject(new Error("No portfolio found"))
+        else resolve(p);  
+      console.log("[EXIT] findPortfolioById")
     })
   }
 }
-
 
 
 const AsyncDatabase = {
@@ -112,10 +148,40 @@ window.E = {
       .catch(err => console.log('next(?)', err))
   },
 
+  expressExamplePromiseParallel: (userId, portfolioId) => {
+    let promise = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+      let userP = PromiseDatabase.findUserById(userId)
+      let portP = PromiseDatabase.findPortfolioById(portfolioId)
+
+      Promise.all([userP, portP])
+        .then(([user, portfolio]) => {
+          let result = {user, portfolio}
+          resolve(result)
+        })
+        .catch(reject)
+    })
+    promise //새로운 프러미스 인스턴스의 
+      .then(result => console.log("res.render('someView', ?)", result))
+      .catch(err => console.log('next(?)', err))
+  },
+
   koaExample: async (userId, portfolioId) => {
-      let user = await AsyncDatabase.findUserById(userId)
-      let portfolio = await AsyncDatabase.findPortfolioById(portfolioId)
+      let user = await PromiseDatabase.findUserById(userId)
+      let portfolio = await PromiseDatabase.findPortfolioById(portfolioId)
+      console.log("ctx.render('someView', ?)", {user, portfolio})
+  },
+
+  koaExampleParallel: async (userId, portfolioId) => {
+      let userP = PromiseDatabase.findUserById(userId)
+      let portfolioP = PromiseDatabase.findPortfolioById(portfolioId)
+
+      let user = await userP
+      let portfolio = await portfolioP
+
       console.log("ctx.render('someView', ?)", {user, portfolio})
   }
 }
 </script>
+<body>
+hi, example
+</body>
