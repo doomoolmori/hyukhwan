@@ -23,7 +23,6 @@ const PromiseDatabase = {
 
     let promise2Deferred = new Promise((resolve, reject) => { //프러미스 객채 생성
       console.log("[ENTER] promise2Deferred")
-      let a = function promise2DeferredInner () {
         const user = users[id];
         console.log("[ENTER] a: promise2DeferredInner")
         if ( ! user) {
@@ -31,13 +30,12 @@ const PromiseDatabase = {
           console.log("[REJECT] promise2Deferred")
         } else {
           resolve(user);  // 프러미스 상태 변환
-          console.log("[RESOLVE] promise2Deferred")
+          console.log("[RESOLVED] promise2Deferred")
         }
         console.log("[EXIT] a: promise2DeferredInner")
-      }
-      a();
       console.log("[EXIT] promise2Deferred")
     });
+    
     return promise2Deferred;
   },
 
@@ -45,7 +43,8 @@ const PromiseDatabase = {
     return new Promise((resolve, reject) => {
       const p = ps[id];
       if ( ! p) reject(new Error("No portfolio found"))
-      else resolve(p);  
+      else resolve(p);
+      console.log("[RESOLVED] findPortfolioById")  
     })
   }
 }
@@ -63,8 +62,8 @@ window.E = {
         resolve(result)
         console.log('[RESOLVED] Promise1 Resolved!')
       })
-      console.log("  promise1 -> p3")   
-      /* let p4 = */ p3.catch(reject)
+      console.log("  promise1 -> p3")  
+/* let p4 = */ p3.catch(reject)
       console.log("  promise1 -> p4")   
       console.log("[EXIT] promise1")
     })

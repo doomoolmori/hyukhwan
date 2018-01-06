@@ -35,64 +35,6 @@ const OldDatabase = {
     console.log("[EXIT] findPortfolioById")
   }
 }
-//window.req = {
-//  query: {
-//    userId: '1',
-//    portfolioId: '3'
-//  }
-//}
-
-
-// 프러미스
-const PromiseDatabase = {
-  findUserById: (id) => {
-
-    let promise2Deferred = new Promise((resolve, reject) => { //프러미스 객채 생성
-      console.log("[ENTER] promise2Deferred")
-      let a = function promise2DeferredInner () {
-        const user = users[id];
-        console.log("[ENTER] a: promise2DeferredInner")
-        if ( ! user) {
-          reject(new Error("No user found")) // 프러미스 상태 변환
-          console.log("[REJECT] promise2Deferred")
-        } else {
-          resolve(user);  // 프러미스 상태 변환
-          console.log("[RESOLVE] promise2Deferred")
-        }
-        console.log("[EXIT] a: promise2DeferredInner")
-      }
-      a();
-      console.log("[EXIT] promise2Deferred")
-    });
-    return promise2Deferred;
-  },
-
-  findPortfolioById: (id) => {
-    return new Promise((resolve, reject) => {
-      const p = ps[id];
-      if ( ! p) reject(new Error("No portfolio found"))
-      else resolve(p);  
-    })
-  }
-}
-
-
-
-const AsyncDatabase = {
-
-  findUserById: async (id) => {
-    const user = users[id];
-    if ( ! user) throw new Error("No user found")
-    else return user
-  },
-
-  findPortfolioById: async (id) => {
-    const p = ps[id];
-    if ( ! p) throw new Error("No portfolio found")
-    else return p
-  }
-}
-
 window.E = {
   expressExampleOld: (userId) => {
     console.log("[ENTER] expressExampleOld")

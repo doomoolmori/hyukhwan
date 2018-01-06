@@ -115,7 +115,7 @@ const AsyncDatabase = {
 window.E = {
   expressExampleOld: (userId, portfolioId) => {
     console.log("[ENTER] expressExampleOld")
-    let cb2 = function (err, user) { // 앞에는 id, 뒤에는 cb에 넘겨줄 2개 파라미터
+    let cb2 = function (err, user) { 
       if (err) console.log('next(?)', err) // 위에 cb에서 err를 리턴하면 
       else { 
         OldDatabase.findPortfolioById(portfolioId, (err, portfolio) => {
@@ -131,7 +131,7 @@ window.E = {
   },
 
   expressExamplePromise: (userId, portfolioId) => {
-    let promise = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+    let promise = new Promise((resolve, reject) => {
       PromiseDatabase.findUserById(userId)
         .then(user => {
           let p1 = PromiseDatabase.findPortfolioById(portfolioId)
@@ -143,13 +143,13 @@ window.E = {
         })
         .catch(reject)
     })
-    promise //새로운 프러미스 인스턴스의 
+    promise
       .then(result => console.log("res.render('someView', ?)", result))
       .catch(err => console.log('next(?)', err))
   },
 
   expressExamplePromiseParallel: (userId, portfolioId) => {
-    let promise = new Promise((resolve, reject) => { //또 새로운 프로미스 인스턴스 생성
+    let promise = new Promise((resolve, reject) => {
       let userP = PromiseDatabase.findUserById(userId)
       let portP = PromiseDatabase.findPortfolioById(portfolioId)
 
@@ -160,7 +160,7 @@ window.E = {
         })
         .catch(reject)
     })
-    promise //새로운 프러미스 인스턴스의 
+    promise
       .then(result => console.log("res.render('someView', ?)", result))
       .catch(err => console.log('next(?)', err))
   },
