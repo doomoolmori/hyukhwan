@@ -173,10 +173,13 @@ window.E = {
 
   koaExampleParallel: async (userId, portfolioId) => {
       let userP = PromiseDatabase.findUserById(userId)
+      console.log('userP: ' + userP)
       let portfolioP = PromiseDatabase.findPortfolioById(portfolioId)
-
+      console.log('portfolioP: ' + portfolioP)
       let user = await userP
+      console.log('user :' + user)
       let portfolio = await portfolioP
+      console.log('portfolio :' + portfolio)
 
       console.log("ctx.render('someView', ?)", {user, portfolio})
   }

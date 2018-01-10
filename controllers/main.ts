@@ -36,14 +36,10 @@ export default {
   },
   axios3: (ctx: Koa.Context) => {
     const url = 'https://api.boolio.co.kr/v1/portfolios'
-    const get1 = axios.get(url)
-    axios.get(url)
-    .then(response => {
+    const req1 = axios.get(url)
+    const p = req1.then(response => {
       ctx.body = response.data
-      resolve()
     })
-    .catch(error => {
-      reject(error)
-    })
-  } 
+   return p
+  }
 }
