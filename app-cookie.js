@@ -1,5 +1,6 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
+var mysql = require('mysql');
 var app = express();
 app.use(cookieParser())
 
@@ -79,6 +80,16 @@ app.get('/count', function(req, res){
   count = count + 1;
   res.cookie('count', count)
   res.send('count :' + count);
+});
+
+app.get('/persons', function(req, res){
+
+  connection.query('SELECT * from dmm1', function(err, rows) {
+    if(err) throw err;
+
+    console.log('The solution is: ', rows);
+    res.send(rows);
+  });
 });
 
 app.listen(3003, function(){
